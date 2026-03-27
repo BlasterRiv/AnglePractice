@@ -53,10 +53,8 @@ int main(int argc, char *argv[]) {
   while (playing) {
     eyeInfo info;
     info.firstAngle = randomR(-18000, 18000) / 100.0;
-    int randd =
-        randomR(-500, 500); // You have a randomR number between 0 and 999
-    float variance =
-        randd / 100.0; // You have a randomR number with 2 decimal points
+    int randd = randomR(-500, 500);
+    float variance = randd / 100.0;
     info.secondAngle = info.firstAngle + variance;
     info.x = randomR(-250, 250);
     info.z = randomR(-250, 250);
