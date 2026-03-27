@@ -14,13 +14,6 @@ struct eyeInfo {
   int xShift, zShift;
   int xAns, zAns;
 };
-
-// Source - https://stackoverflow.com/a/53964988
-// Posted by florestan, modified by community. See post 'Timeline' for change
-// history Retrieved 2026-03-17, License - CC BY-SA 4.0 body-mass-index
-// auto bmi = [](const human& e) { return e.height / (e.weight * e.weight); };
-
-// show(mankind, bmi);
 void displayInfo(eyeInfo info) {
   std::cout << std::fixed;
   std::cout << "\033[36m";
@@ -45,7 +38,6 @@ void displayAns(eyeInfo info) {
   std::cout << "\033[31m";
   std::cout << "shift: " << info.xShift << " " << info.zShift << "\n";
   std::cout << "answer x: " << info.xAns << " z: " << info.zAns << "\033[0m";
-  // std::cout << info.posNeg;
   std::cout << "\n" << "-------" << "\n";
 }
 int randomR(int range_from, int range_to) {
@@ -56,15 +48,9 @@ int randomR(int range_from, int range_to) {
 }
 int main(int argc, char *argv[]) {
   bool playing = true;
-  // enumrate preff
   unsigned seed = time(0);
   srand(seed);
   while (playing) {
-    // select note
-    // selecNote=noteSelector(prefrences,preformance);
-
-    // play selecNote SF2Lib
-    //
     eyeInfo info;
     info.firstAngle = randomR(-18000, 18000) / 100.0;
     int randd =
@@ -72,17 +58,13 @@ int main(int argc, char *argv[]) {
     float variance =
         randd / 100.0; // You have a randomR number with 2 decimal points
     info.secondAngle = info.firstAngle + variance;
-    // if < or > abs 180, fix
     info.x = randomR(-250, 250);
     info.z = randomR(-250, 250);
     info.axis = randomR(0, 8) / 1.0;
     int r = randomR(0, 3);
-    //   std::cout << r << "posneg" << info.posNeg.set(r);
     int majShift = 200 / std::abs(info.firstAngle - info.secondAngle);
     int minShift = majShift * (info.axis / 8.0);
 
-    // std::cout << (1 - (info.posNeg[0] * 2));
-    // std::cout << ~(info.posNeg[2]);
     info.xShift = (1 - (info.posNeg[0] * 2)) * ((majShift * ~(info.posNeg[2])) +
                                                 (minShift * (info.posNeg[2])));
     info.zShift = (1 - (info.posNeg[1] * 2)) * ((majShift * (info.posNeg[2])) +
@@ -94,7 +76,6 @@ int main(int argc, char *argv[]) {
     int xCords;
     std::cout << "Enter xCords: \n";
     std::cin >> xCords;
-    // if (xCords == 2) {   std::cout << true; std::cout << xCords;}
 
     int zCords;
     std::cout << "Enter zCords: \n";
