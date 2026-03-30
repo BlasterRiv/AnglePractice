@@ -1,10 +1,10 @@
+#include "StrongholdInfo.h"
 #include <bitset>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <random>
 #include <string>
-
 struct eyeInfo {
   int x, z;
   std::bitset<4> posNeg;
@@ -50,7 +50,10 @@ int main(int argc, char *argv[]) {
   bool playing = true;
   unsigned seed = time(0);
   srand(seed);
+  StrongholdInfo stronghold_info;
+  stronghold_info.generateStrongholds();
   while (playing) {
+
     eyeInfo info;
     info.firstAngle = randomR(-18000, 18000) / 100.0;
     int randd = randomR(-500, 500);
