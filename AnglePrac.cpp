@@ -1,5 +1,6 @@
 #include "StrongholdInfo.h"
 #include <bitset>
+#include <cmath>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
@@ -58,14 +59,22 @@ int main(int argc, char *argv[]) {
 
     eyeInfo info;
 
-    info.current_location.x = randomR(-250, 250);
-    info.current_location.z = randomR(-250, 250);
+    info.current_location.x = randomR(-200, 200) * 8;
+    info.current_location.z = randomR(-200, 200) * 8;
     info.firstAngle =
         stronghold_info.getAngleOfClosestStronghold(info.current_location);
-    int randd = randomR(-500, 500);
-    info.secondAngle = info.firstAngle + randomR(-28, 28);
-    info.axis = randomR(0, 8) / 1.0;
-    // int r = randomR(0, 3);
+    info.secondAngle = stronghold_info.getAngleOfClosestStronghold(
+        {info.current_location.x +
+             int(28 * cos((info.firstAngle + 90) * M_PI / 180.0)),
+         info.current_location.z +
+             int(28 * sin((info.firstAngle + 90) * M_PI / 180.0))});
+    info.axis = (sin(info.firstAngle * 2) * 8) / 1.0;
+    info.posNeg.set(
+        0, round((cos((info.firstAngle * M_PI / 180) / 2.0) + 1.0) / 2.0));
+    info.posNeg.set(
+        1, round((cos((info.firstAngle * M_PI / 180) + M_PI) + 1.0) / 2.0));
+    info.posNeg.set(
+        2, round((sin((info.firstAngle * M_PI / 180) * 4.0) + 1.0) / 2.0));
     int majShift = 200 / std::abs(info.firstAngle - info.secondAngle);
     int minShift = majShift * (info.axis / 8.0);
 
@@ -77,6 +86,13 @@ int main(int argc, char *argv[]) {
     info.Ans = stronghold_info.getClosestStronghold(info.current_location);
     displayInfo(info);
     int xCords;
+    Point s = {info.current_location.x +
+                   int(28 * cos((info.firstAngle + 90) * M_PI / 180.0)),
+               info.current_location.z +
+                   int(28 * sin((info.firstAngle + 90) * M_PI / 180.0))};
+    std::cout << s.x << " z " << s.z << " ";
+    std::cout << ((cos(info.firstAngle + M_PI) + 1.0) / 2.0);
+    std::cout << "\n" << ((cos(info.firstAngle / 2.0) + 1.0) / 2.0);
     std::cout << "Enter xCords: \n";
     std::cin >> xCords;
 

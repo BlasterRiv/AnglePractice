@@ -15,7 +15,7 @@ int StrongholdInfo::getZPoint(double angle, int x) {
   return tan(angle * (M_PI / 180)) * x;
 }
 float StrongholdInfo::getAngle(Point sec_pt, Point ft_pt) {
-  return atan2(ft_pt.z - sec_pt.z, ft_pt.x - sec_pt.x) * 180 / M_PI;
+  return atan2(ft_pt.z - sec_pt.z, ft_pt.x - sec_pt.x) * 180.0 / M_PI;
 }
 
 StrongholdInfo::StrongholdInfo() {
@@ -61,7 +61,8 @@ Point StrongholdInfo::getClosestStronghold(Point curLoc) {
 }
 double StrongholdInfo::getAngleOfClosestStronghold(Point curLoc) {
   Point closest = getClosestStronghold(curLoc);
-  return atan2(closest.z, closest.x);
+  return atan2(abs(closest.z - curLoc.z), abs(closest.x - curLoc.x)) * 180.0 /
+         M_PI;
 }
 Point StrongholdInfo::getFistStronghold() { return first_stronghold; }
 
