@@ -1,5 +1,6 @@
 #include "StrongholdInfo.h"
 #include "point.h"
+#include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <random>
@@ -18,16 +19,17 @@ float StrongholdInfo::getAngle(Point sec_pt, Point ft_pt) {
 }
 
 StrongholdInfo::StrongholdInfo() {
-  first_stonghold, sec_stronghold, third_stonghold = {-1, -1};
+  first_stronghold, sec_stronghold, third_stonghold = {-1, -1};
 }
 void StrongholdInfo::generateStrongholds() {
   double rand_dis = randD(1280, 2816);
   double theta = randD(0, 2.0 * M_PI);
-  first_stonghold = {int(rand_dis * cos(theta)), int(rand_dis * sin(theta))};
-  std::cout << rand_dis << " x: " << first_stonghold.x
-            << " z: " << first_stonghold.z << " " << rand_dis * cos(theta);
-  // float angle = getAngle(first_stonghold);
-  // float angle = atan2(first_stonghold.z, first_stonghold.x) * 180.00 / M_PI;
+  first_stronghold = {int(rand_dis * cos(theta)), int(rand_dis * sin(theta))};
+  std::cout << rand_dis << " x: " << first_stronghold.x
+            << " z: " << first_stronghold.z << " " << rand_dis * cos(theta);
+  // float angle = getAngle(first_stronghold);
+  // float angle = atan2(first_stronghold.z, first_stronghold.x) * 180.00 /
+  // M_PI;
   double angle = theta * (180.0 / M_PI);
   std::cout << "Angle: " << angle << "/" << theta;
   //   randomx within  IRX ORx
@@ -41,8 +43,27 @@ void StrongholdInfo::generateStrongholds() {
             << sec_stronghold.x << " " << sec_stronghold.z << "\n"
             << third_stonghold.x << " " << third_stonghold.z;
 }
+Point StrongholdInfo::getClosestStronghold(Point curLoc) {
+  int dis_to_first = sqrt(pow(first_stronghold.x - curLoc.x, 2) +
+                          pow(first_stronghold.z - curLoc.z, 2));
+  int dis_to_sec = sqrt(pow(first_stronghold.x - curLoc.x, 2) +
+                        pow(first_stronghold.z - curLoc.z, 2));
 
-Point StrongholdInfo::getFistStronghold() { return first_stonghold; }
+  int dis_to_third = sqrt(pow(first_stronghold.x - curLoc.x, 2) +
+                          pow(first_stronghold.z - curLoc.z, 2));
+  if (dis_to_first <= dis_to_sec && dis_to_first <= dis_to_third) {
+    return first_stronghold;
+  } else if (dis_to_sec <= dis_to_third) {
+    return sec_stronghold;
+  } else { // else if //else cheack error
+    return third_stonghold;
+  }
+}
+double StrongholdInfo::getAngleOfClosestStronghold(Point curLoc) {
+  Point closest = getClosestStronghold(curLoc);
+  return atan2(closest.z, closest.x);
+}
+Point StrongholdInfo::getFistStronghold() { return first_stronghold; }
 
 Point StrongholdInfo::getSecStronghold() { return sec_stronghold; }
 Point StrongholdInfo::getThdStronghold() { return third_stonghold; }

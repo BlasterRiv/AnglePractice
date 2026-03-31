@@ -6,18 +6,20 @@
 #include <random>
 #include <string>
 struct eyeInfo {
-  int x, z;
+  // int x, z;
+  Point current_location;
   std::bitset<4> posNeg;
   float axis;
   float firstAngle, secondAngle;
 
   int xShift, zShift;
-  int xAns, zAns;
+  Point Ans;
 };
 void displayInfo(eyeInfo info) {
   std::cout << std::fixed;
   std::cout << "\033[36m";
-  std::cout << "Curent cords: x: " << info.x << " z: " << info.z << "\n";
+  std::cout << "Curent cords: x: " << info.current_location.x
+            << " z: " << info.current_location.z << "\n";
   std::string xNeg = "x";
   std::string zNeg = "z";
   if (info.posNeg[0])
@@ -37,7 +39,7 @@ void displayInfo(eyeInfo info) {
 void displayAns(eyeInfo info) {
   std::cout << "\033[31m";
   std::cout << "shift: " << info.xShift << " " << info.zShift << "\n";
-  std::cout << "answer x: " << info.xAns << " z: " << info.zAns << "\033[0m";
+  std::cout << "answer x: " << info.Ans.x << " z: " << info.Ans.z << "\033[0m";
   std::cout << "\n" << "-------" << "\n";
 }
 int randomR(int range_from, int range_to) {
@@ -55,14 +57,15 @@ int main(int argc, char *argv[]) {
   while (playing) {
 
     eyeInfo info;
-    info.firstAngle = randomR(-18000, 18000) / 100.0;
+
+    info.current_location.x = randomR(-250, 250);
+    info.current_location.z = randomR(-250, 250);
+    info.firstAngle =
+        stronghold_info.getAngleOfClosestStronghold(info.current_location);
     int randd = randomR(-500, 500);
-    float variance = randd / 100.0;
-    info.secondAngle = info.firstAngle + variance;
-    info.x = randomR(-250, 250);
-    info.z = randomR(-250, 250);
+    info.secondAngle = info.firstAngle + randomR(-28, 28);
     info.axis = randomR(0, 8) / 1.0;
-    int r = randomR(0, 3);
+    // int r = randomR(0, 3);
     int majShift = 200 / std::abs(info.firstAngle - info.secondAngle);
     int minShift = majShift * (info.axis / 8.0);
 
@@ -71,8 +74,7 @@ int main(int argc, char *argv[]) {
     info.zShift = (1 - (info.posNeg[1] * 2)) * ((majShift * (info.posNeg[2])) +
                                                 (minShift * ~(info.posNeg[2])));
 
-    info.xAns = info.x + info.xShift;
-    info.zAns = info.z + info.zShift;
+    info.Ans = stronghold_info.getClosestStronghold(info.current_location);
     displayInfo(info);
     int xCords;
     std::cout << "Enter xCords: \n";
@@ -81,9 +83,9 @@ int main(int argc, char *argv[]) {
     int zCords;
     std::cout << "Enter zCords: \n";
     std::cin >> zCords;
-    if ((xCords == info.xAns) && (zCords == info.zAns)) {
+    if ((xCords == info.Ans.x) && (zCords == info.Ans.z)) {
       std::cout << "correct \n";
-    } else if (abs(info.xAns - xCords) < 16 && abs(info.zAns - zCords) < 16) {
+    } else if (abs(info.Ans.x - xCords) < 16 && abs(info.Ans.z - zCords) < 16) {
       std::cout << "Close! \n";
       displayAns(info);
     } else {
