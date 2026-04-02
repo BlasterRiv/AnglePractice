@@ -61,6 +61,7 @@ int main(int argc, char *argv[]) {
 
     info.current_location.x = randomR(-200, 200) * 8;
     info.current_location.z = randomR(-200, 200) * 8;
+    //
     info.firstAngle =
         stronghold_info.getAngleOfClosestStronghold(info.current_location);
     info.secondAngle = stronghold_info.getAngleOfClosestStronghold(
@@ -68,16 +69,18 @@ int main(int argc, char *argv[]) {
              int(28 * cos((info.firstAngle + 90) * M_PI / 180.0)),
          info.current_location.z +
              int(28 * sin((info.firstAngle + 90) * M_PI / 180.0))});
-    info.axis = (sin(info.firstAngle * 2) * 8) / 1.0;
+    //
+    info.axis = fabs(fmod((info.firstAngle + 45.0), 90) - 45.0) / 5.625;
+    //
     info.posNeg.set(
         0, round((cos((info.firstAngle * M_PI / 180) / 2.0) + 1.0) / 2.0));
     info.posNeg.set(
         1, round((cos((info.firstAngle * M_PI / 180) + M_PI) + 1.0) / 2.0));
     info.posNeg.set(
         2, round((sin((info.firstAngle * M_PI / 180) * 4.0) + 1.0) / 2.0));
-    int majShift = 200 / std::abs(info.firstAngle - info.secondAngle);
+    int majShift = 200.0 / std::abs(info.firstAngle - info.secondAngle);
     int minShift = majShift * (info.axis / 8.0);
-
+    //
     info.xShift = (1 - (info.posNeg[0] * 2)) * ((majShift * ~(info.posNeg[2])) +
                                                 (minShift * (info.posNeg[2])));
     info.zShift = (1 - (info.posNeg[1] * 2)) * ((majShift * (info.posNeg[2])) +
