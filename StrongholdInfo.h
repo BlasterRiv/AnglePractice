@@ -16,5 +16,11 @@ private:
   double randD(double min, double max);
   int getZPoint(double angle, int x);
   float getAngle(Point sec_pt, Point ft_pt = origin);
+  double tanAdjusted(double);
+  double tan2Adjusted(double, double);
+  double sinAdjusted(double);
+  double cosAdjusted(double);
+
+  double minecraftOffset;
   static const Point origin;
 };

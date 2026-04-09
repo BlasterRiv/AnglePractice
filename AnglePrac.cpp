@@ -49,6 +49,9 @@ int randomR(int range_from, int range_to) {
   std::uniform_int_distribution<int> distr(range_from, range_to);
   return distr(generator);
 }
+enum Flags {
+  isNetherChordSet = 1,
+};
 int main(int argc, char *argv[]) {
   bool playing = true;
   unsigned seed = time(0);
@@ -67,17 +70,17 @@ int main(int argc, char *argv[]) {
     info.secondAngle = stronghold_info.getAngleOfClosestStronghold(
         {info.current_location.x +
              int(28 * cos((info.firstAngle + 90) * M_PI / 180.0)),
-         info.current_location.z +
-             int(28 * sin((info.firstAngle + 90) * M_PI / 180.0))});
+         info.current_location.z + int(28 * sin((info.firstAngle + 90) * M_PI /
+                                                180.0))}); // intercept?
     //
     info.axis = fabs(fmod((info.firstAngle + 45.0), 90) - 45.0) / 5.625;
     //
     info.posNeg.set(
-        0, round((cos((info.firstAngle * M_PI / 180) / 2.0) + 1.0) / 2.0));
+        0, round((cos((info.firstAngle * M_PI / 180.0) / 2.0) + 1.0) / 2.0));
     info.posNeg.set(
-        1, round((cos((info.firstAngle * M_PI / 180) + M_PI) + 1.0) / 2.0));
+        1, round((cos((info.firstAngle * M_PI / 180.0) + M_PI) + 1.0) / 2.0));
     info.posNeg.set(
-        2, round((sin((info.firstAngle * M_PI / 180) * 4.0) + 1.0) / 2.0));
+        2, round((sin((info.firstAngle * M_PI / 180.0) * 4.0) + 1.0) / 2.0));
     int majShift = 200.0 / std::abs(info.firstAngle - info.secondAngle);
     int minShift = majShift * (info.axis / 8.0);
     //
@@ -94,8 +97,6 @@ int main(int argc, char *argv[]) {
                info.current_location.z +
                    int(28 * sin((info.firstAngle + 90) * M_PI / 180.0))};
     std::cout << s.x << " z " << s.z << " ";
-    std::cout << ((cos(info.firstAngle + M_PI) + 1.0) / 2.0);
-    std::cout << "\n" << ((cos(info.firstAngle / 2.0) + 1.0) / 2.0);
     std::cout << "Enter xCords: \n";
     std::cin >> xCords;
 
