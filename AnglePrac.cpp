@@ -75,12 +75,14 @@ int main(int argc, char *argv[]) {
     //
     info.axis = fabs(fmod((info.firstAngle + 45.0), 90) - 45.0) / 5.625;
     //
-    info.posNeg.set(
-        0, round((cos((info.firstAngle * M_PI / 180.0) / 2.0) + 1.0) / 2.0));
+    info.posNeg.set(0,
+                    round((sin((info.firstAngle * M_PI / 180.0)) + 1.0) / 2.0));
     info.posNeg.set(
         1, round((cos((info.firstAngle * M_PI / 180.0) + M_PI) + 1.0) / 2.0));
     info.posNeg.set(
-        2, round((sin((info.firstAngle * M_PI / 180.0) * 4.0) + 1.0) / 2.0));
+        2,
+        round((sin(((info.firstAngle * M_PI / 180.0) * 4.0) + M_PI_2) + 1.0) /
+              2.0));
     int majShift = 200.0 / std::abs(info.firstAngle - info.secondAngle);
     int minShift = majShift * (info.axis / 8.0);
     //

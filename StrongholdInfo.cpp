@@ -62,7 +62,12 @@ Point StrongholdInfo::getClosestStronghold(Point curLoc) {
 }
 double StrongholdInfo::getAngleOfClosestStronghold(Point curLoc) {
   Point closest = getClosestStronghold(curLoc);
-  return atan2(closest.x - curLoc.x, curLoc.z - closest.z) * 180.0 / M_PI;
+  double ang =
+      (atan2(closest.z - curLoc.z, closest.x - curLoc.x) * 180.0 / M_PI) - 90.0;
+  if (fabs(ang) > 180) {
+    ang = 180 - (fabs(ang) - 180);
+  }
+  return ang;
 }
 Point StrongholdInfo::getFistStronghold() { return first_stronghold; }
 Point StrongholdInfo::getSecStronghold() { return sec_stronghold; }
