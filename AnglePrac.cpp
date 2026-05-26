@@ -39,7 +39,7 @@ void displayInfo(eyeInfo info) {
 }
 void displayAns(eyeInfo info) {
   std::cout << "\033[31m";
-  std::cout << "shift: " << info.xShift << " " << info.zShift << "\n";
+  std::cout << "nether shift: " << info.xShift << " " << info.zShift << "\n";
   std::cout << "answer x: " << info.Ans.x << " z: " << info.Ans.z << "\033[0m";
   std::cout << "\n" << "-------" << "\n";
 }
@@ -69,9 +69,9 @@ int main(int argc, char *argv[]) {
         stronghold_info.getAngleOfClosestStronghold(info.current_location);
     info.secondAngle = stronghold_info.getAngleOfClosestStronghold(
         {info.current_location.x +
-             int(28 * cos((info.firstAngle + 90) * M_PI / 180.0)),
-         info.current_location.z + int(28 * sin((info.firstAngle + 90) * M_PI /
-                                                180.0))}); // intercept?
+             int(28 * cos((info.firstAngle + 270) * M_PI / 180.0)),
+         info.current_location.z + int(28 * -sin((info.firstAngle + 270) *
+                                                 M_PI / 180.0))}); // intercept?
     //
     info.axis = fabs(fmod((info.firstAngle + 45.0), 90) - 45.0) / 5.625;
     //
@@ -95,9 +95,9 @@ int main(int argc, char *argv[]) {
     displayInfo(info);
     int xCords;
     Point s = {info.current_location.x +
-                   int(28 * cos((info.firstAngle + 90) * M_PI / 180.0)),
+                   int(28 * cos((info.firstAngle + 270) * M_PI / 180.0)),
                info.current_location.z +
-                   int(28 * sin((info.firstAngle + 90) * M_PI / 180.0))};
+                   int(28 * -sin((info.firstAngle + 270) * M_PI / 180.0))};
     std::cout << s.x << " z " << s.z << " ";
     std::cout << "Enter xCords: \n";
     std::cin >> xCords;
