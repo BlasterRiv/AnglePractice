@@ -13,7 +13,7 @@ double StrongholdInfo::randD(double min, double max) {
   return distr(generator);
 }
 int StrongholdInfo::getZPoint(double angle, int x) {
-  return tan(angle * M_PI / 180.0) * x;
+  return tan((angle - 90.0) * M_PI / 180.0) * x;
 }
 float StrongholdInfo::getAngle(Point sec_pt, Point ft_pt) {
   return atan2(ft_pt.x - sec_pt.x, sec_pt.z - ft_pt.z) * 180.0 / M_PI;
@@ -33,7 +33,7 @@ void StrongholdInfo::generateStrongholds() {
   // float angle = getAngle(first_stronghold);
   // float angle = atan2(first_stronghold.z, first_stronghold.x) * 180.00 /
   // M_PI;
-  double angle = theta * (180.0 / M_PI);
+  double angle = theta * 180.0 / M_PI;
   std::cout << "Angle: " << angle << "/" << theta;
   //   randomx within  IRX ORx
   int randomx = int(randD(1280, 2816) * -sin(theta - (120.00 * M_PI / 180.0)));
