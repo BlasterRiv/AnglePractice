@@ -47,11 +47,11 @@ void StrongholdInfo::generateStrongholds() {
 Point StrongholdInfo::getClosestStronghold(Point curLoc) {
   int dis_to_first = sqrt(pow(first_stronghold.x - curLoc.x, 2) +
                           pow(first_stronghold.z - curLoc.z, 2));
-  int dis_to_sec = sqrt(pow(first_stronghold.x - curLoc.x, 2) +
-                        pow(first_stronghold.z - curLoc.z, 2));
+  int dis_to_sec = sqrt(pow(sec_stronghold.x - curLoc.x, 2) +
+                        pow(sec_stronghold.z - curLoc.z, 2));
 
-  int dis_to_third = sqrt(pow(first_stronghold.x - curLoc.x, 2) +
-                          pow(first_stronghold.z - curLoc.z, 2));
+  int dis_to_third = sqrt(pow(third_stonghold.x - curLoc.x, 2) +
+                          pow(third_stonghold.z - curLoc.z, 2));
   if (dis_to_first <= dis_to_sec && dis_to_first <= dis_to_third) {
     return first_stronghold;
   } else if (dis_to_sec <= dis_to_third) {
