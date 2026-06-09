@@ -2,7 +2,7 @@ DEMO math practice for stronghold triangulation.
 
 This is a CLI-only project, and there are no plans to add a GUI. 
 
-This is using 2 chunk axis triangulation, specifically the one explained in <a herf="https://www.youtube.com/watch?v=OKJxB9ClPbo">this</a> video by Fineberg.
+This is using 2 chunk axis triangulation, specifically the one explained in [this video](https://www.youtube.com/watch?v=OKJxB9ClPbo) by Fineberg.
 
 <img src="example.png">
 
