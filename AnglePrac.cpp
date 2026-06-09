@@ -1,23 +1,29 @@
+#include "StrongholdInfo.h"
 #include <bitset>
+#include <cmath>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <random>
 #include <string>
-
 struct eyeInfo {
-  int x, z;
+  // int x, z;
+  Point current_location;
+  Point sec_location;
   std::bitset<4> posNeg;
   float axis;
   float firstAngle, secondAngle;
 
   int xShift, zShift;
-  int xAns, zAns;
+  Point Ans;
 };
 void displayInfo(eyeInfo info) {
   std::cout << std::fixed;
   std::cout << "\033[36m";
-  std::cout << "Curent cords: x: " << info.x << " z: " << info.z << "\n";
+  std::cout << "Curent coords: x: " << info.current_location.x
+            << " z: " << info.current_location.z << "\n";
+  std::cout << "second position x:" << info.sec_location.x
+            << " z: " << info.sec_location.z << "\n";
   std::string xNeg = "x";
   std::string zNeg = "z";
   if (info.posNeg[0])
@@ -25,8 +31,8 @@ void displayInfo(eyeInfo info) {
   if (info.posNeg[1])
     zNeg = "-z";
   std::cout << "Major cord: ";
-  std::cout << (info.posNeg[2] ? zNeg.append(" minor chord: ").append(xNeg)
-                               : xNeg.append(" minor chord: ").append(zNeg));
+  std::cout << (info.posNeg[2] ? zNeg.append(" minor coord: ").append(xNeg)
+                               : xNeg.append(" minor coord: ").append(zNeg));
 
   std::cout << "\n";
   std::cout << "angles: " << std::setprecision(2) << info.firstAngle << " "
@@ -36,8 +42,9 @@ void displayInfo(eyeInfo info) {
 }
 void displayAns(eyeInfo info) {
   std::cout << "\033[31m";
-  std::cout << "shift: " << info.xShift << " " << info.zShift << "\n";
-  std::cout << "answer x: " << info.xAns << " z: " << info.zAns << "\033[0m";
+  std::cout << "sheetless estimated nether shift: " << info.xShift << " "
+            << info.zShift << "\n";
+  std::cout << "answer x: " << info.Ans.x << " z: " << info.Ans.z << "\033[0m";
   std::cout << "\n" << "-------" << "\n";
 }
 int randomR(int range_from, int range_to) {
@@ -46,43 +53,94 @@ int randomR(int range_from, int range_to) {
   std::uniform_int_distribution<int> distr(range_from, range_to);
   return distr(generator);
 }
+int randomNormalR(int range_from, int range_to) {
+  std::random_device rand_dev;
+  std::mt19937 generator(rand_dev());
+  std::normal_distribution<double> distr(range_from, range_to);
+  return distr(generator);
+}
+
+enum Flags {
+  isNetherCoordSet = 1,
+};
 int main(int argc, char *argv[]) {
   bool playing = true;
   unsigned seed = time(0);
   srand(seed);
+  StrongholdInfo stronghold_info;
+  stronghold_info.generateStrongholds();
   while (playing) {
+
     eyeInfo info;
-    info.firstAngle = randomR(-18000, 18000) / 100.0;
-    int randd =
-        randomR(-500, 500); // You have a randomR number between 0 and 999
-    float variance =
-        randd / 100.0; // You have a randomR number with 2 decimal points
-    info.secondAngle = info.firstAngle + variance;
-    info.x = randomR(-250, 250);
-    info.z = randomR(-250, 250);
-    info.axis = randomR(0, 8) / 1.0;
-    int r = randomR(0, 3);
-    int majShift = 200 / std::abs(info.firstAngle - info.secondAngle);
+    double rand_dis = randomNormalR(64, 300) * 8;
+    double theta = randomR(0, 2.0 * M_PI) - M_PI_2;
+    info.current_location = {int(rand_dis * -sin(theta)),
+                             int(rand_dis * cos(-theta))};
+    //
+    info.firstAngle =
+        stronghold_info.getAngleOfClosestStronghold(info.current_location);
+    info.secondAngle = stronghold_info.getAngleOfClosestStronghold(
+        {info.current_location.x +
+             int(28 * -sin((info.firstAngle + 270) * M_PI / 180.0)),
+         info.current_location.z + int(28 * cos((info.firstAngle + 270) * M_PI /
+                                                180.0))}); // intercept?
+    //
+    // info.axis = fabs(fmod((info.firstAngle + 45.0), 90) - 45.0) / 5.625;
+    info.axis =
+        ((cos((info.firstAngle * M_PI / 180.0) * 4.0 + M_PI) + 1.0) / 2) * 8;
+    //
+    info.posNeg.set(0,
+                    round((sin((info.firstAngle * M_PI / 180.0)) + 1.0) / 2.0));
+    info.posNeg.set(
+        1, round((cos((info.firstAngle * M_PI / 180.0) + M_PI) + 1.0) / 2.0));
+    info.posNeg.set(
+        2,
+        round((sin(((info.firstAngle * M_PI / 180.0) * 2.0) + M_PI_2) + 1.0) /
+              2.0));
+    /*std::cout << "PosNeg " << info.posNeg << " round: "
+              << round((sin(((info.firstAngle * M_PI / 180.0) * 2.0) + M_PI_2) +
+                        1.0) /
+                       2.0)
+              << "Raw: "
+              << (sin(((info.firstAngle * M_PI / 180.0) * 2.0) + M_PI_2) +
+                  1.0) /
+                     2.0;*/
+    // Sheetless
+    int majShift = 200.0 / std::abs(info.firstAngle - info.secondAngle);
     int minShift = majShift * (info.axis / 8.0);
 
+    /*NinjaBrain
+     * int majShift =
+        (32.0 /
+         tan((std::fabs(info.firstAngle - info.secondAngle) * M_PI / 180.0))) /
+        8.0;
+    int minShift = majShift * (info.axis / 8.0);
+    */
     info.xShift = (1 - (info.posNeg[0] * 2)) * ((majShift * ~(info.posNeg[2])) +
                                                 (minShift * (info.posNeg[2])));
     info.zShift = (1 - (info.posNeg[1] * 2)) * ((majShift * (info.posNeg[2])) +
                                                 (minShift * ~(info.posNeg[2])));
 
-    info.xAns = info.x + info.xShift;
-    info.zAns = info.z + info.zShift;
-    displayInfo(info);
-    int xCords;
-    std::cout << "Enter xCords: \n";
-    std::cin >> xCords;
+    info.Ans = stronghold_info.getClosestStronghold(info.current_location);
+    info.sec_location = {
+        info.current_location.x +
+            int(28 * cos((info.firstAngle + 270) * M_PI / 180.0)),
+        info.current_location.z +
+            int(28 * -sin((info.firstAngle + 270) * M_PI / 180.0))};
 
-    int zCords;
-    std::cout << "Enter zCords: \n";
-    std::cin >> zCords;
-    if ((xCords == info.xAns) && (zCords == info.zAns)) {
+    displayInfo(info);
+    int xCoord;
+    std::cout << "Enter xCoord: \n";
+    std::cin >> xCoord;
+
+    int zCoord;
+    std::cout << "Enter zCoord: \n";
+    std::cin >> zCoord;
+    //(xCoord == info.Ans.x) && (zCoord == info.Ans.z)
+    if (abs(info.Ans.x - xCoord) < 16 && abs(info.Ans.z - zCoord) < 16) {
       std::cout << "correct \n";
-    } else if (abs(info.xAns - xCords) < 16 && abs(info.zAns - zCords) < 16) {
+    } else if (abs(info.Ans.x - xCoord) < 128 &&
+               abs(info.Ans.z - zCoord) < 128) {
       std::cout << "Close! \n";
       displayAns(info);
     } else {
